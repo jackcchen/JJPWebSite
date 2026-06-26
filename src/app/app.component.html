@@ -1,0 +1,53 @@
+<main class="shell">
+  <section class="header">
+    <div>
+      <p class="eyebrow">Azure Static Web Apps</p>
+      <h1>CSV contents from Azure Blob Storage</h1>
+      <p class="summary">
+        Data is retrieved by a .NET Azure Function using Microsoft Entra ID access control.
+      </p>
+    </div>
+  </section>
+
+  <section class="content" *ngIf="vm$ | async as vm">
+    <div class="status" *ngIf="vm.state === 'loading'">
+      Loading CSV data...
+    </div>
+
+    <div class="status error" *ngIf="vm.state === 'error'">
+      {{ vm.message }}
+    </div>
+
+    <ng-container *ngIf="vm.state === 'loaded'">
+      <div class="table-header">
+        <h2>Blob CSV rows</h2>
+        <span>{{ vm.items.length }} records</span>
+      </div>
+
+      <div class="empty" *ngIf="vm.items.length === 0">
+        The CSV file was read successfully, but it did not contain any rows.
+      </div>
+
+      <div class="table-wrap" *ngIf="vm.items.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th class="numeric">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of vm.items; trackBy: trackById">
+              <td>{{ item.id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.category }}</td>
+              <td class="numeric">{{ item.amount | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </section>
+</main>
